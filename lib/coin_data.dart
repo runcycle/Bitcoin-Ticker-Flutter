@@ -1,3 +1,6 @@
+import 'price_screen.dart';
+import 'utilities/networking.dart';
+
 const List<String> currenciesList = [
   'AUD',
   'BRL',
@@ -28,4 +31,14 @@ const List<String> cryptoList = [
   'LTC',
 ];
 
-class CoinData {}
+const symbolDataURL = 'https://apiv2.bitcoinaverage.com/indices/';
+
+class CoinData {
+
+
+  Future<String> getCurrencyData() async {
+    NetworkHelper networkHelper = NetworkHelper('$symbolDataURL/{symbol_set}/ticker/{symbol}');
+    var currencyData = await networkHelper.getData();
+    return currencyData;
+  }
+}
