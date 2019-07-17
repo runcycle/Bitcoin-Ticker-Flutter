@@ -1,5 +1,5 @@
-import 'price_screen.dart';
-import 'utilities/networking.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 
 const List<String> currenciesList = [
   'AUD',
@@ -31,14 +31,20 @@ const List<String> cryptoList = [
   'LTC',
 ];
 
-const symbolDataURL = 'https://apiv2.bitcoinaverage.com/indices/';
+const bitcoinAverageURL = 'https://apiv2.bitcoinaverage.com/indices/global/ticker';
 
 class CoinData {
+  Future getCoinData() async {
+    String requestURL = '$bitcoinAverageURL/BTCUSD';
+    http.Response response = await http.get(requestURL);
 
-
-  Future<String> getCurrencyData() async {
-    NetworkHelper networkHelper = NetworkHelper('$symbolDataURL/{symbol_set}/ticker/{symbol}');
-    var currencyData = await networkHelper.getData();
-    return currencyData;
+    if (response.statusCode == 200) {
+      var decodedData = jsonDecode(response.body);
+      var lastPrice = decodedData['last'];
+      return lastPrice;
+    } else {
+      print(response.statusCode);
+      throw 'Error retrieving data';
+    }
   }
 }
